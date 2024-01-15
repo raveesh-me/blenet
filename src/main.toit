@@ -41,7 +41,10 @@ main:
 
   write-characteristic /ble.RemoteCharacteristic := get-write-characteristic-from-peripheral peripheral
   print "$write-characteristic.properties"
-  write-characteristic.write #[0x1b, 0x4A, 0x01]/// move lines
-  write-characteristic.write "Hello Nancy!\nThis is a secret message written just for you.\nYou are loved :)".to-byte-array
-  write-characteristic.write #[0x1b, 0x4A, 0x01]/// move lines
-  write-characteristic.write CUT
+  buffer /bytes.Buffer := bytes.Buffer
+
+  buffer.write "Hello Nancy!\nThis is a secret message written just for you.\nYou are loved :)".to-byte-array
+  buffer.write #[0x1b, 0x64, 0x06]/// move lines because cut always happens at -4 
+  buffer.write CUT
+  while true:
+    write-characteristic.write buffer.bytes
